@@ -4,6 +4,7 @@ import { getDestinationDescription, getDestinationStatus } from '../data/destina
 
 export default function DestinationCard({ destination }) {
   const status = getDestinationStatus(destination);
+  const description = getDestinationDescription(destination);
 
   return <a href="#/peaks" aria-label={`Explore ${destination.name} on the Peaks page`} className="group block min-w-0">
     <div className="aspect-[4/3] overflow-hidden rounded-lg bg-stone-200 dark:bg-stone-800">
@@ -12,6 +13,8 @@ export default function DestinationCard({ destination }) {
     <p className="mt-3 text-xs uppercase tracking-wider text-forest dark:text-emerald-400 sm:mt-4">{destination.type} · {destination.province}</p>
     {status && <StatusBadge status={status} />}
     <h3 className="mt-1 font-semibold font-serif text-xl">{destination.name}</h3>
-    <p className="mt-2 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">{getDestinationDescription(destination)}</p>
+    <div className="mt-2 space-y-2 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+      {description.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+    </div>
   </a>;
 }

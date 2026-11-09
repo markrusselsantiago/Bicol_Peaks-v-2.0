@@ -7,6 +7,7 @@ const slugify = value => value.toLowerCase().replace(/\s+/g, '-');
 
 function DestinationTile({ destination, onSelect }) {
   const status = getDestinationStatus(destination);
+  const description = getDestinationDescription(destination);
 
   const activateWithKeyboard = event => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -22,7 +23,9 @@ function DestinationTile({ destination, onSelect }) {
     <p className="mt-3 text-xs uppercase tracking-wider text-forest dark:text-emerald-400 sm:mt-4">{destination.type} · {destination.province}</p>
     {status && <StatusBadge status={status} />}
     <h3 className="mt-1 font-semibold font-serif text-xl">{destination.name}</h3>
-    <p className="mt-2 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">{getDestinationDescription(destination)}</p>
+    <div className="mt-2 space-y-2 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+      {description.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+    </div>
   </article>;
 }
 
@@ -183,6 +186,10 @@ function Detail({ label, value }) {
 
   return <div className="mt-4">
     <p className="text-xs font-medium uppercase tracking-wider text-stone-500">{label}</p>
-    <p className="mt-1 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">{value}</p>
+    <div className="mt-1 space-y-2 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+      {Array.isArray(value)
+        ? value.map((paragraph, index) => <p key={index}>{paragraph}</p>)
+        : <p>{value}</p>}
+    </div>
   </div>;
 }
