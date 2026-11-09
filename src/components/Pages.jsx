@@ -1,10 +1,13 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { DESTINATIONS, PROVINCES } from '../data/destinations.js';
+import { getDestinationDescription, getDestinationLocation, getDestinationStatus, getVerifiedDetail } from '../data/destinationPresentation.js';
 import StatusBadge from './StatusBadge.jsx';
 
 const slugify = value => value.toLowerCase().replace(/\s+/g, '-');
 
 function DestinationTile({ destination, onSelect }) {
+  const status = getDestinationStatus(destination);
+
   const activateWithKeyboard = event => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -17,9 +20,9 @@ function DestinationTile({ destination, onSelect }) {
       <img src={`${import.meta.env.BASE_URL}${destination.image}`} alt={`${destination.name}, ${destination.province}`} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
     </div>
     <p className="mt-3 text-xs uppercase tracking-wider text-forest dark:text-emerald-400 sm:mt-4">{destination.type} · {destination.province}</p>
-    {destination.volcanoStatus && <StatusBadge status={destination.volcanoStatus} />}
+    {status && <StatusBadge status={status} />}
     <h3 className="mt-1 font-semibold font-serif text-xl">{destination.name}</h3>
-    <p className="mt-2 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">{destination.description}</p>
+    <p className="mt-2 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">{getDestinationDescription(destination)}</p>
   </article>;
 }
 
@@ -163,11 +166,11 @@ export function DestinationDialog({ destination, onClose }) {
         <p className="text-xs uppercase tracking-wider text-forest dark:text-emerald-400">{destination.type}</p>
         <h2 id="destination-dialog-title" className="mt-1 font-semibold font-serif text-2xl">{destination.name}</h2>
         <Detail label="Province" value={destination.province} />
-        <Detail label="Specific Location" value={destination.location || 'Location details not verified.'} />
-        <Detail label="Volcano Classification" value={destination.volcanoStatus || 'Not classified as a volcano'} />
-        <Detail label="Overview" value={destination.description} />
-        <Detail label="Geological Origin and History" value={destination.originHistory || 'A detailed historical and geological account was not confirmed.'} />
-        <Detail label="Origin of the Name" value={destination.nameOrigin || 'The origin of this name was not confirmed in reliable published sources.'} />
+        <Detail label="Location" value={getDestinationLocation(destination)} />
+        <Detail label="Volcano Classification" value={getDestinationStatus(destination)} />
+        <Detail label="Overview" value={getDestinationDescription(destination)} />
+        <Detail label="Geological Origin and History" value={getVerifiedDetail(destination.originHistory)} />
+        <Detail label="Origin of the Name" value={getVerifiedDetail(destination.nameOrigin)} />
         {destination.elevation && <Detail label="Elevation" value={destination.elevation} />}
         <button ref={closeButton} type="button" onClick={onClose} className="mt-6 rounded-full border border-stone-300 px-5 py-2 text-sm dark:border-stone-700">Close</button>
       </div>
@@ -176,6 +179,8 @@ export function DestinationDialog({ destination, onClose }) {
 }
 
 function Detail({ label, value }) {
+  if (!value) return null;
+
   return <div className="mt-4">
     <p className="text-xs font-medium uppercase tracking-wider text-stone-500">{label}</p>
     <p className="mt-1 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">{value}</p>
