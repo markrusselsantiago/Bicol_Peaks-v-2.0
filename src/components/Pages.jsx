@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { DESTINATIONS, PROVINCES } from '../data/destinations.js';
+import StatusBadge from './StatusBadge.jsx';
 
 const slugify = value => value.toLowerCase().replace(/\s+/g, '-');
 
@@ -16,9 +17,9 @@ function DestinationTile({ destination, onSelect }) {
       <img src={`${import.meta.env.BASE_URL}${destination.image}`} alt={`${destination.name}, ${destination.province}`} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
     </div>
     <p className="mt-3 text-xs uppercase tracking-wider text-forest dark:text-emerald-400 sm:mt-4">{destination.type} · {destination.province}</p>
-    {destination.volcanoStatus && <span className="mt-2 inline-flex rounded-full border border-stone-300 px-3 py-1 text-xs font-semibold text-stone-700 dark:border-stone-600 dark:text-stone-300">{destination.volcanoStatus}</span>}
+    {destination.volcanoStatus && <StatusBadge status={destination.volcanoStatus} />}
     <h3 className="mt-1 font-semibold font-serif text-xl">{destination.name}</h3>
-    <p className="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-400">{destination.description}</p>
+    <p className="mt-2 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">{destination.description}</p>
   </article>;
 }
 
@@ -177,6 +178,6 @@ export function DestinationDialog({ destination, onClose }) {
 function Detail({ label, value }) {
   return <div className="mt-4">
     <p className="text-xs font-medium uppercase tracking-wider text-stone-500">{label}</p>
-    <p className="mt-1 text-sm leading-relaxed text-stone-600 dark:text-stone-400">{value}</p>
+    <p className="mt-1 text-justify text-sm leading-relaxed text-stone-600 dark:text-stone-400">{value}</p>
   </div>;
 }
