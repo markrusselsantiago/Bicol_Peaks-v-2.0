@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { DESTINATIONS, PROVINCES } from '../data/destinations.js';
 
 const slugify = value => value.toLowerCase().replace(/\s+/g, '-');
@@ -134,9 +134,10 @@ export function AboutPage() {
 export function DestinationDialog({ destination, onClose }) {
   const closeButton = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const previousFocus = document.activeElement;
-    closeButton.current?.focus();
+    const scrollPosition = window.scrollY;
+    closeButton.current?.focus({ preventScroll: true });
     const handleKeyDown = event => {
       if (event.key === 'Escape') onClose();
       if (event.key === 'Tab') {
@@ -147,7 +148,10 @@ export function DestinationDialog({ destination, onClose }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) {
+        previousFocus.focus({ preventScroll: true });
+      }
+      window.scrollTo(0, scrollPosition);
     };
   }, [onClose]);
 
